@@ -1,0 +1,6 @@
+*.ninja
+*.exe
+*.tex.png
+/.ponygame
+/.ponytmp
+/.vscode
