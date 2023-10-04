@@ -1,6 +1,9 @@
 @type Player : Node
 	vec2 velocity;
 
+	float walk_anim_t;
+	float walk_vel_rot_smoothed;
+
 @construct
 @tick
 
