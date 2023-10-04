@@ -6,7 +6,9 @@ void construct_Player(Player *self) {
 	self->walk_anim_t = 0;
 	self->walk_vel_rot_smoothed = 0;
 	self->arrow_timer = 0;
-	self->arrows_per_second = 10;
+	self->arrows_per_second = 1000;
+
+	self->hue = 0;
 }
 
 // void destruct_Player(Player *self) { }
@@ -39,6 +41,16 @@ float change_angle_for_flip(float rot, float flip) {
 }
 
 static void
+update_hue(Player *self) {
+	// Rotate hue over time: 1 minute per cycle
+	self->hue = fmod(self->hue + get_dt() * (1.0 / 60.0), 1.0);
+
+	float hsv[] = { 1.0, 1.0, 1.0 };
+	hsv[0] = self->hue;
+	sprite_set_hsv(self->tree.sprite, hsv);
+}
+
+static void
 animate(Player *self) {
 	if(self->velocity.x > 100) {
 		set_lscale(self->tree.sprite, vxy(1, 1));
@@ -63,6 +75,8 @@ animate(Player *self) {
 	rot += change_angle_for_flip(self->walk_vel_rot_smoothed, get_lscale(self->tree.sprite).x);
 
 	set_lrot(self->tree.sprite, rot);
+
+	update_hue(self);
 }
 
 static void

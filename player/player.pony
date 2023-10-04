@@ -7,6 +7,8 @@
 	float arrow_timer;
 	float arrows_per_second;
 
+	float hue; 
+
 @construct
 @tick
 
