@@ -8,7 +8,8 @@ void construct_Player(Player *self) {
 
 // void destruct_Player(Player *self) { }
 
-vec2 get_input() {
+static vec2
+get_input() {
 	vec2 result = vxy(0, 0);
 	if(keys.A.pressed) {
 		result.x -= 1;
@@ -34,7 +35,8 @@ float change_angle_for_flip(float rot, float flip) {
 	return rot;
 }
 
-void animate(Player *self) {
+static void
+animate(Player *self) {
 	if(self->velocity.x > 100) {
 		set_lscale(self->tree.sprite, vxy(1, 1));
 	}
@@ -60,7 +62,27 @@ void animate(Player *self) {
 	set_lrot(self->tree.sprite, rot);
 }
 
-void tick_Player(Player *self, PlayerTree *tree) {
+static void
+shoot(Player *self) {
+	Arrow *ar = new(Arrow);
+	reparent(ar, root);
+
+	set_lpos(ar, get_lpos(self));
+	
+	// Compute velocity, with random spread
+	// NOTE: This spread implementation lets you get less spread if you move
+	// the mouse farther away -- do we want that?
+	vec2 r_spread = vxy(randf_range(-100, 100), randf_range(-100, 100));
+	vec2 v = sub(add(mouse_global(), r_spread), get_gpos(self));
+	v = mul(norm(v), 1000);
+
+	ar->velocity = v;
+
+	set_lrot(ar, atan2(v.y, v.x));
+}
+
+static void
+physics(Player *self) {
 	vec2 accel = mul(get_input(), 1600);
 
 	if(length(accel) < 2 && length(self->velocity) > 0) {
@@ -78,7 +100,16 @@ void tick_Player(Player *self, PlayerTree *tree) {
 	}
 
 	set_lpos(self, add(get_lpos(self), mul(self->velocity, get_dt())));
+}
 
+void
+tick_Player(Player *self, PlayerTree *tree) {
+	physics(self);
 	animate(self);
+
+	if(mouse.left.pressed) {
+		shoot(self);
+		logf_info("shoot!");
+	}
 }
 
