@@ -10,7 +10,7 @@ bool disable_pixel_perfect_framebuffer = true;
 Player *player;
 
 impl_begin {
-	render_set_target_screen_size(1500 * 2, 1000 * 2);
+	render_set_target_screen_size(1500 * 2.5, 1000 * 2.5);
 
 	float clear[4] = { 0.6, 0.6, 0.6, 1.0 };
 	memcpy(clear_color, clear, sizeof(clear));
