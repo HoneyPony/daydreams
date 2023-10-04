@@ -3,7 +3,10 @@
 // Automatically copied header lines. May not be useful.
 
 void construct_Player(Player *self) {
-	
+	self->walk_anim_t = 0;
+	self->walk_vel_rot_smoothed = 0;
+	self->arrow_timer = 0;
+	self->arrows_per_second = 90;
 }
 
 // void destruct_Player(Player *self) { }
@@ -120,8 +123,16 @@ tick_Player(Player *self, PlayerTree *tree) {
 	physics(self);
 	animate(self);
 
-	if(mouse.left.pressed) {
-		shoot(self);
+	float arrow_time_chunk = 1.0 / self->arrows_per_second;
+	self->arrow_timer += get_dt();
+	int shots = 0;
+	while(self->arrow_timer >= arrow_time_chunk) {
+		if(mouse.left.pressed) {
+			shoot(self);
+		}
+		self->arrow_timer -= arrow_time_chunk;
+		shots += 1;
 	}
+	//logf_info("shots = %d", shots);
 }
 

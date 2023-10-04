@@ -4,6 +4,9 @@
 	float walk_anim_t;
 	float walk_vel_rot_smoothed;
 
+	float arrow_timer;
+	float arrows_per_second;
+
 @construct
 @tick
 
