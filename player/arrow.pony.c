@@ -21,5 +21,12 @@ void tick_Arrow(Arrow *self, ArrowTree *tree) {
 	if(self->lifetime > 1.5) {
 		node_destroy(self);
 	}
+
+	// End spawning animation
+	if(self->current_animation == &res.player.arrow_spawn_tex.loop) {
+		if(self->current_frame == 4) {
+			sprite_play(self, &res.player.arrow1_tex.loop);
+		}
+	}
 }
 

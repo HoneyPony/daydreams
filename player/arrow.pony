@@ -10,4 +10,4 @@
 
 @tree
 	self : Arrow
-		sprite_play($, &res.player.arrow1_tex.loop)
+		sprite_play($, &res.player.arrow_spawn_tex.loop)

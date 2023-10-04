@@ -67,13 +67,26 @@ shoot(Player *self) {
 	Arrow *ar = new(Arrow);
 	reparent(ar, root);
 
-	set_lpos(ar, get_lpos(self));
+	const float SPAWN_SPREAD = 600;
+	const float VEL_SPREAD = 50;
+
+
+	// Spawn arrows from random locations that all head precisely towards
+	// mouse
+	//
+	// Idea: Player can control arrow locations both by moving the character
+	// and by moving the mouse
+	vec2 r_spawn_spread = vxy(randf_range(-SPAWN_SPREAD, SPAWN_SPREAD), randf_range(-SPAWN_SPREAD, SPAWN_SPREAD));
+	vec2 pos = add(get_lpos(self), r_spawn_spread);
+	set_lpos(ar, pos);
+
+	//set_lpos(ar, get_lpos(self));
 	
 	// Compute velocity, with random spread
 	// NOTE: This spread implementation lets you get less spread if you move
 	// the mouse farther away -- do we want that?
-	vec2 r_spread = vxy(randf_range(-100, 100), randf_range(-100, 100));
-	vec2 v = sub(add(mouse_global(), r_spread), get_gpos(self));
+	vec2 r_vel_spread = vxy(randf_range(-VEL_SPREAD, VEL_SPREAD), randf_range(-VEL_SPREAD, VEL_SPREAD));
+	vec2 v = sub(add(mouse_global(), r_vel_spread), pos);
 	v = mul(norm(v), 1000);
 
 	ar->velocity = v;
@@ -109,7 +122,6 @@ tick_Player(Player *self, PlayerTree *tree) {
 
 	if(mouse.left.pressed) {
 		shoot(self);
-		logf_info("shoot!");
 	}
 }
 
