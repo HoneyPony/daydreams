@@ -9,6 +9,9 @@ bool disable_pixel_perfect_framebuffer = true;
 // --- Global Variables ---
 Player *player;
 
+float enemy_timer = 0.0;
+const float enemy_timer_max = 0.1;
+
 impl_begin {
 	render_set_target_screen_size(1500 * 2.5, 1000 * 2.5);
 
@@ -23,12 +26,35 @@ impl_begin {
 
 	player = new(Player);
 	reparent(player, root);
+
+	//reparent(new(Enemy), root);
 }
 
 impl_tick_start {
 	
 }
 
+void spawn_enemy() {
+	Enemy *e = new(Enemy);
+	float x = randf_range(-2000, 2000);
+	float y = randf_range(0, 1) < 0.5 ? 2000 : -2000;
+
+	if(randf_range(0, 1) < 0.5) {
+		// Swap
+		float tmp = x;
+		x = y;
+		y = tmp;
+	}
+
+	set_lpos(e, vxy(x, y));
+	reparent(e, root);
+}
+
 impl_tick_end {
-	
+	// Done at end of ticks so as not to affect physics
+	enemy_timer += get_dt();
+	if(enemy_timer > enemy_timer_max) {
+		enemy_timer = 0;
+		spawn_enemy();
+	}
 }

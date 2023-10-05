@@ -12,6 +12,9 @@
 @construct
 @tick
 
+@header
+	extern Player *player;
+
 @tree
 	self : Player
 
