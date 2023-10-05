@@ -55,6 +55,6 @@ impl_tick_end {
 	enemy_timer += get_dt();
 	if(enemy_timer > enemy_timer_max) {
 		enemy_timer = 0;
-		spawn_enemy();
+		for(int i = 0; i < 7; ++i) spawn_enemy();
 	}
 }

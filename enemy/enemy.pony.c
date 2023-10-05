@@ -5,6 +5,7 @@
 void
 construct_Enemy(Enemy *self) {
 	self->velocity = vxy(0, 0);
+	self->health = 3;
 }
 
 // void destruct_Enemy(Enemy *self) { }
@@ -18,18 +19,28 @@ check_collision(Enemy *self, Arrow *arr) {
 	return dist <= r1 + r2;
 }
 
-static bool
+static Arrow*
 check_collisions(Enemy *self) {
 	// Very slow physics implementation FOR NOW.
 	Arrow *ar = node_header(Arrow).list_allocated.next_node;
 	while(ar) {
 		if(check_collision(self, ar)) {
-			return true;
+			return ar;
 		}
 
 		ar = ar->internal.links.next_node;
 	}
-	return false;
+	return NULL;
+}
+
+static void
+animate(Enemy *self) {
+	float rot = sin(self->walk_anim_t) * 0.15;
+
+	self->walk_anim_t += get_dt() * 8.0;
+	self->walk_anim_t = fmod(self->walk_anim_t, PI * 2.0);
+
+	set_lrot(self, rot);
 }
 
 static void
@@ -41,7 +52,7 @@ ai(Enemy *self) {
 
 	vec2 accel = sub(desired_vel, self->velocity);
 	float max_accel = length(accel);
-	accel = mul(norm(accel), 1600.0 * get_dt());
+	accel = mul(norm(accel), 800.0 * get_dt());
 	if(length(accel) > max_accel) {
 		self->velocity = desired_vel;
 	}
@@ -58,12 +69,18 @@ tick_Enemy(Enemy *self, EnemyTree *tree) {
 	// Super method
 	process_Sprite(self, NULL);
 
-	bool hit = check_collisions(self);
+	Arrow *hit = check_collisions(self);
 	if(hit) {
-		node_destroy(self);
+		node_destroy(hit); // TODO: Arrow piercing
+
+		self->health -= 1;
+		if(self->health <= 0) {
+			node_destroy(self);
+		}
 	}
 
 	
 	ai(self);
+	animate(self);
 }
 
