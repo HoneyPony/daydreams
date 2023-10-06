@@ -7,16 +7,20 @@ bool may_assume_opaque = false;
 bool disable_pixel_perfect_framebuffer = true;
 
 // --- Global Variables ---
+SpatialHash arrow_hash;
+
 Player *player;
 
 float enemy_timer = 0.0;
-const float enemy_timer_max = 4.0;
+const float enemy_timer_max = 0.1;
 
 impl_begin {
 	render_set_target_screen_size(1500 * 2.5, 1000 * 2.5);
 
 	float clear[4] = { 0.8, 0.8, 0.8, 1.0 };
 	memcpy(clear_color, clear, sizeof(clear));
+
+	sh_init(&arrow_hash, &node_header(Arrow), 64, 40);
 
 	/*Sprite *paper = new(Sprite);
 	paper->z_index = -5;

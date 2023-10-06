@@ -5,7 +5,7 @@
 void
 construct_Enemy(Enemy *self) {
 	self->velocity = vxy(0, 0);
-	self->health = 3;
+	self->health = 1;
 }
 
 // void destruct_Enemy(Enemy *self) { }
@@ -22,7 +22,7 @@ check_collision(Enemy *self, Arrow *arr) {
 static Arrow*
 check_collisions(Enemy *self) {
 	// Very slow physics implementation FOR NOW.
-	Arrow *ar = node_header(Arrow).list_allocated.next_node;
+	/*Arrow *ar = node_header(Arrow).list_allocated.next_node;
 	while(ar) {
 		if(check_collision(self, ar)) {
 			return ar;
@@ -30,7 +30,9 @@ check_collisions(Enemy *self) {
 
 		ar = ar->internal.links.next_node;
 	}
-	return NULL;
+	return NULL;*/
+
+	return sh_find_closest(&arrow_hash, get_gpos(self), 128 + 64);
 }
 
 static void
@@ -71,6 +73,9 @@ tick_Enemy(Enemy *self, EnemyTree *tree) {
 
 	Arrow *hit = check_collisions(self);
 	if(hit) {
+		if(!hit->internal.is_valid) {
+			logf_warn("warning! hit destroyed arrow! what!, %p", hit);
+		}
 		node_destroy(hit); // TODO: Arrow piercing
 
 		self->health -= 1;
