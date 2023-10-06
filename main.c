@@ -10,12 +10,12 @@ bool disable_pixel_perfect_framebuffer = true;
 Player *player;
 
 float enemy_timer = 0.0;
-const float enemy_timer_max = 0.1;
+const float enemy_timer_max = 4.0;
 
 impl_begin {
 	render_set_target_screen_size(1500 * 2.5, 1000 * 2.5);
 
-	float clear[4] = { 0.6, 0.6, 0.6, 1.0 };
+	float clear[4] = { 0.8, 0.8, 0.8, 1.0 };
 	memcpy(clear_color, clear, sizeof(clear));
 
 	/*Sprite *paper = new(Sprite);

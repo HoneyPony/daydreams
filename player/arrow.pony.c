@@ -5,8 +5,10 @@
 void construct_Arrow(Arrow *self) {
 	self->lifetime = 0; // Must re-initialize	
 
-	float hsv[] = { 1.0, 1.0, 1.0 };
-	hsv[0] = randf_range(0.0, 1.0); // random hue
+	float hsv[] = { 1.0, 0.5, 1.0 };
+	float min_hue = 215 / 360.0;
+	float max_hue = 290 / 360.0;
+	hsv[0] = randf_range(min_hue, max_hue); // random hue
 	sprite_set_hsv((Sprite*)self, hsv);
 }
 

@@ -6,7 +6,7 @@ void construct_Player(Player *self) {
 	self->walk_anim_t = 0;
 	self->walk_vel_rot_smoothed = 0;
 	self->arrow_timer = 0;
-	self->arrows_per_second = 800;
+	self->arrows_per_second = 20;
 
 	self->hue = 0;
 }
@@ -45,8 +45,10 @@ update_hue(Player *self) {
 	// Rotate hue over time: 1 minute per cycle
 	self->hue = fmod(self->hue + get_dt() * (1.0 / 60.0), 1.0);
 
-	float hsv[] = { 1.0, 1.0, 1.0 };
-	hsv[0] = self->hue;
+	float hsv[] = { 1.0, 0.5, 1.0 };
+	float min_hue = 215 / 360.0;
+	float max_hue = 290 / 360.0;
+	hsv[0] = (0.5 + 0.5 * sin(self->hue * 6.28)) * (max_hue - min_hue) + min_hue;
 	sprite_set_hsv(self->tree.sprite, hsv);
 }
 
@@ -84,8 +86,8 @@ shoot(Player *self) {
 	Arrow *ar = new(Arrow);
 	reparent(ar, root);
 
-	const float SPAWN_SPREAD = 600;
-	const float VEL_SPREAD = 50;
+	const float SPAWN_SPREAD = 50;
+	const float VEL_SPREAD = 400;
 
 
 	// Spawn arrows from random locations that all head precisely towards
@@ -141,9 +143,9 @@ tick_Player(Player *self, PlayerTree *tree) {
 	self->arrow_timer += get_dt();
 	int shots = 0;
 	while(self->arrow_timer >= arrow_time_chunk) {
-		if(mouse.left.pressed) {
-			shoot(self);
-		}
+		//if(mouse.left.pressed) {
+		shoot(self);
+		//}
 		self->arrow_timer -= arrow_time_chunk;
 		shots += 1;
 	}
