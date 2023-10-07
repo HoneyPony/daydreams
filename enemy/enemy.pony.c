@@ -6,9 +6,14 @@ void
 construct_Enemy(Enemy *self) {
 	self->velocity = vxy(0, 0);
 	self->health = 1;
+
+	sh_add(&enemy_hash, self, &self->ref);
 }
 
-// void destruct_Enemy(Enemy *self) { }
+void
+destruct_Enemy(Enemy *self) {
+	sh_remove(&enemy_hash, self, &self->ref);
+}
 
 static bool
 check_collision(Enemy *self, Arrow *arr) {
@@ -43,6 +48,35 @@ animate(Enemy *self) {
 	self->walk_anim_t = fmod(self->walk_anim_t, PI * 2.0);
 
 	set_lrot(self, rot);
+}
+
+static list_of(AnyNode*) enemy_repel_buffer = NULL;
+
+static void
+repel_from_others(Enemy *self) {
+	if(!enemy_repel_buffer) {
+		ls_init(enemy_repel_buffer);
+	}
+
+	vec2 my_pos = get_gpos(self);
+
+	// Find all the nearby enemies
+	ls_clear(enemy_repel_buffer);
+	sh_find(&enemy_hash, my_pos, 128 * 2, &enemy_repel_buffer);
+
+	vec2 offset = vxy(0, 0);
+
+	foreach(enemy_node, enemy_repel_buffer, {
+		vec2 p = get_gpos(enemy_node);
+		vec2 dir = sub(p, my_pos);
+
+		// Very strong fall-off using hyperbolic curve, but stretched a bit (0.001)
+		float strength = 128.0 / (1.0 + 0.0007 * dot(dir, dir));
+
+		offset = add(offset, mul(norm(dir), -strength));
+	})
+
+	ltranslate(self, offset);
 }
 
 static void
@@ -86,6 +120,11 @@ tick_Enemy(Enemy *self, EnemyTree *tree) {
 
 	
 	ai(self);
+	repel_from_others(self);
 	animate(self);
+
+	if(self->internal.is_valid) {
+		sh_update(&enemy_hash, self, &self->ref);
+	}
 }
 

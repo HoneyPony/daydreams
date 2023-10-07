@@ -8,6 +8,7 @@ bool disable_pixel_perfect_framebuffer = true;
 
 // --- Global Variables ---
 SpatialHash arrow_hash;
+SpatialHash enemy_hash;
 
 Player *player;
 
@@ -21,6 +22,7 @@ impl_begin {
 	memcpy(clear_color, clear, sizeof(clear));
 
 	sh_init(&arrow_hash, &node_header(Arrow), 64, 40);
+	sh_init(&enemy_hash, &node_header(Enemy), 64, 40);
 
 	/*Sprite *paper = new(Sprite);
 	paper->z_index = -5;
@@ -52,13 +54,17 @@ void spawn_enemy() {
 
 	set_lpos(e, vxy(x, y));
 	reparent(e, root);
+
+	sh_update(&enemy_hash, e, &e->ref);
 }
+
+int fuel = 1000;
 
 impl_tick_end {
 	// Done at end of ticks so as not to affect physics
 	enemy_timer += get_dt();
 	if(enemy_timer > enemy_timer_max) {
 		enemy_timer = 0;
-		for(int i = 0; i < 7; ++i) spawn_enemy();
+		for(int i = 0; i < 40; ++i) { spawn_enemy(); }
 	}
 }
