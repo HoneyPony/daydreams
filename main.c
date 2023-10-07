@@ -15,7 +15,7 @@ Player *player;
 float enemy_timer = 0.0;
 const float enemy_timer_max = 0.1;
 
-#define SPATIAL_HASH_INIT_WIDTH 4 // init to a small size for debugging purposes
+#define SPATIAL_HASH_INIT_WIDTH 20 // init to a small size for debugging purposes
 
 impl_begin {
 	render_set_target_screen_size(1500 * 2.5, 1000 * 2.5);
