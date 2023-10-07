@@ -15,14 +15,16 @@ Player *player;
 float enemy_timer = 0.0;
 const float enemy_timer_max = 0.1;
 
+#define SPATIAL_HASH_INIT_WIDTH 4 // init to a small size for debugging purposes
+
 impl_begin {
 	render_set_target_screen_size(1500 * 2.5, 1000 * 2.5);
 
 	float clear[4] = { 0.8, 0.8, 0.8, 1.0 };
 	memcpy(clear_color, clear, sizeof(clear));
 
-	sh_init(&arrow_hash, &node_header(Arrow), 64, 40);
-	sh_init(&enemy_hash, &node_header(Enemy), 64, 40);
+	sh_init(&arrow_hash, &node_header(Arrow), 64, SPATIAL_HASH_INIT_WIDTH);
+	sh_init(&enemy_hash, &node_header(Enemy), 64, SPATIAL_HASH_INIT_WIDTH);
 
 	/*Sprite *paper = new(Sprite);
 	paper->z_index = -5;
