@@ -1,5 +1,12 @@
 #include "ponygame_nuklear.h"
 
+static struct nk_font *mysteryquest;
+
+void
+pony_fonts(struct nk_font_atlas *atlas) {
+	mysteryquest = nk_font_atlas_add_from_file(atlas, "fonts/mystery-quest/MysteryQuest-Regular.ttf", 32, 0);
+}
+
 static nk_bool
 transparent_begin(struct nk_context *ctx, const char *title, struct nk_rect r, enum nk_window_flags flags) {
 	struct nk_style *s = &ctx->style;
@@ -36,6 +43,7 @@ upgrade_menu(struct nk_context *ctx, int32_t win_width, int32_t win_height) {
 }
 
 void pony_ui(struct nk_context *ctx, int32_t width, int32_t height) {
+	nk_style_set_font(ctx, &mysteryquest->handle);
 	/*if(transparent_begin(ctx, "ui", nk_rect(0, 0, width, height), 0)) {
 		nk_layout_row_static(ctx, 20, width / 2, 2);
 		nk_label(ctx, "Hello world", NK_TEXT_LEFT);
