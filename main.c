@@ -13,7 +13,7 @@ SpatialHash enemy_hash;
 Player *player;
 
 float enemy_timer = 0.0;
-const float enemy_timer_max = 0.1;
+const float enemy_timer_max = 0.8;
 
 #define SPATIAL_HASH_INIT_WIDTH 20 // init to a small size for debugging purposes
 
@@ -67,6 +67,6 @@ impl_tick_end {
 	enemy_timer += get_dt();
 	if(enemy_timer > enemy_timer_max) {
 		enemy_timer = 0;
-		for(int i = 0; i < 40; ++i) { spawn_enemy(); }
+		for(int i = 0; i < 2; ++i) { spawn_enemy(); }
 	}
 }

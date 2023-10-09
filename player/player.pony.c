@@ -6,7 +6,7 @@ void construct_Player(Player *self) {
 	self->walk_anim_t = 0;
 	self->walk_vel_rot_smoothed = 0;
 	self->arrow_timer = 0;
-	self->arrows_per_second = 10000;
+	self->arrows_per_second = 100;
 
 	self->hue = 0;
 }
