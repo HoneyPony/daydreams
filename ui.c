@@ -4,7 +4,7 @@ static struct nk_font *mysteryquest;
 
 void
 pony_fonts(struct nk_font_atlas *atlas) {
-	mysteryquest = nk_font_atlas_add_from_file(atlas, "fonts/mystery-quest/MysteryQuest-Regular.ttf", 32, 0);
+	mysteryquest = nk_font_atlas_add_from_file(atlas, "fonts/mysteryquest/MysteryQuestRegular.ttf", 32, 0);
 }
 
 static nk_bool
