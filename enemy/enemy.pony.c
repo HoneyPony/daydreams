@@ -1,13 +1,31 @@
 #include "my.ponygame.h"
 
-// Automatically copied header lines. May not be useful.
+/* Enemy data tables defined by the ENEMY_TYPE index. */
+
+float enemy_knockback[] = {
+	1.0 /* ENEMY_PAPER */
+};
+
+int enemy_max_health[] = {
+	4
+};
 
 void
 construct_Enemy(Enemy *self) {
 	self->velocity = vxy(0, 0);
-	self->health = 1;
+	self->health = 4;
+	self->type = 0;
 
 	sh_add(&enemy_hash, self, &self->ref);
+}
+
+Enemy*
+enemy_new_with_type(int type) {
+	Enemy *e = new(Enemy);
+	e->type = type;
+
+	e->health = enemy_max_health[type];
+	return e;
 }
 
 void
@@ -115,6 +133,10 @@ tick_Enemy(Enemy *self, EnemyTree *tree) {
 		self->health -= 1;
 		if(self->health <= 0) {
 			node_destroy(self);
+		}
+		else {
+			/* Apply knockback */
+			self->velocity = mul(hit->velocity, enemy_knockback[self->type]);
 		}
 	}
 

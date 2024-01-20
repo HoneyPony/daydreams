@@ -43,7 +43,7 @@ impl_tick_start {
 }
 
 void spawn_enemy() {
-	Enemy *e = new(Enemy);
+	Enemy *e = enemy_new_with_type(ENEMY_PAPER);
 	float x = randf_range(-2000, 2000);
 	float y = randf_range(0, 1) < 0.5 ? 2000 : -2000;
 
