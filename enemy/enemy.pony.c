@@ -16,6 +16,11 @@ construct_Enemy(Enemy *self) {
 	self->health = 4;
 	self->type = 0;
 
+	for(int i = 0; i < ENEMY_ARROW_TRACK_COUNT; ++i) {
+		set_ref(self->arrow_tracker[i], NULL);
+	}
+	self->arrow_track_next = 0;
+
 	sh_add(&enemy_hash, self, &self->ref);
 }
 
@@ -42,6 +47,16 @@ check_collision(Enemy *self, Arrow *arr) {
 	return dist <= r1 + r2;
 }
 
+static int
+filter_already_hit_arrows(AnyNode *candidate, void *user_data) {
+	Enemy *self = user_data;
+	for(int i = 0; i < ENEMY_ARROW_TRACK_COUNT; ++i) {
+		if(unbox(self->arrow_tracker[i]) == candidate) return 0;
+	}
+
+	return 1;
+}
+
 static Arrow*
 check_collisions(Enemy *self) {
 	// Very slow physics implementation FOR NOW.
@@ -55,7 +70,13 @@ check_collisions(Enemy *self) {
 	}
 	return NULL;*/
 
-	return sh_find_closest(&arrow_hash, get_gpos(self), 128 + 64);
+
+
+	return sh_find_closest(&arrow_hash, get_gpos(self), 128 + 64,
+		(sh_filter){
+			.fn = filter_already_hit_arrows,
+			.user_data = self
+		});
 }
 
 static void
@@ -128,7 +149,10 @@ tick_Enemy(Enemy *self, EnemyTree *tree) {
 		if(!hit->internal.is_valid) {
 			logf_warn("warning! hit destroyed arrow! what!, %p", hit);
 		}
-		node_destroy(hit); // TODO: Arrow piercing
+		arrow_hit(hit);
+
+		set_ref(self->arrow_tracker[self->arrow_track_next], hit);
+		self->arrow_track_next = (self->arrow_track_next + 1) % ENEMY_ARROW_TRACK_COUNT;
 
 		self->health -= 1;
 		if(self->health <= 0) {
@@ -136,7 +160,7 @@ tick_Enemy(Enemy *self, EnemyTree *tree) {
 		}
 		else {
 			/* Apply knockback */
-			self->velocity = mul(hit->velocity, enemy_knockback[self->type]);
+			self->velocity = add(self->velocity, mul(hit->velocity, enemy_knockback[self->type]));
 		}
 	}
 

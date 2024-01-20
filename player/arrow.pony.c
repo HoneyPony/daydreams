@@ -1,5 +1,18 @@
 #include "my.ponygame.h"
 
+const int arrow_piercing[][10] = {
+	/* Star */
+	{ 30 }
+};
+
+int arrow_levels[] = {
+	0
+};
+
+const float arrow_lifetimes[] = {
+	1.5
+};
+
 // Automatically copied header lines. May not be useful.
 
 void construct_Arrow(Arrow *self) {
@@ -12,6 +25,13 @@ void construct_Arrow(Arrow *self) {
 	sprite_set_hsv((Sprite*)self, hsv);
 
 	sh_add(&arrow_hash, self, &self->ref);
+}
+
+Arrow*
+arrow_new_type(int type) {
+	Arrow *a = new(Arrow);
+	a->type = type;
+	return a;
 }
 
 
@@ -32,7 +52,7 @@ void tick_Arrow(Arrow *self, ArrowTree *tree) {
 	sh_update(&arrow_hash, self, &self->ref);
 
 	self->lifetime += get_dt();
-	if(self->lifetime > 1.5) {
+	if(self->lifetime > arrow_lifetimes[self->type]) {
 		node_destroy(self);
 	}
 
@@ -46,3 +66,10 @@ void tick_Arrow(Arrow *self, ArrowTree *tree) {
 	
 }
 
+void
+arrow_hit(Arrow *ar) {
+	ar->hits += 1;
+	if(ar->hits >= arrow_piercing[ar->type][arrow_levels[ar->type]]) {
+		node_destroy(ar);
+	}
+}

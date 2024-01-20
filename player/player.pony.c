@@ -6,7 +6,7 @@ void construct_Player(Player *self) {
 	self->walk_anim_t = 0;
 	self->walk_vel_rot_smoothed = 0;
 	self->arrow_timer = 0;
-	self->arrows_per_second = 40;
+	self->arrows_per_second = 5;
 
 	self->hue = 0;
 }
@@ -83,7 +83,7 @@ animate(Player *self) {
 
 static void
 shoot(Player *self) {
-	Arrow *ar = new(Arrow);
+	Arrow *ar = arrow_new_type(ARROW_STAR);
 	reparent(ar, root);
 
 	const float SPAWN_SPREAD = 50;

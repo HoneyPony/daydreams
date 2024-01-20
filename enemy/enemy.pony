@@ -1,4 +1,6 @@
 @type Enemy : Sprite
+	Ref(struct Arrow) arrow_tracker[4];
+	int arrow_track_next;
 	vec2 velocity;
 	float walk_anim_t;
 	int health;
@@ -13,6 +15,8 @@
 
 @header
 	extern SpatialHash enemy_hash;
+
+	#define ENEMY_ARROW_TRACK_COUNT 4
 
 	#define ENEMY_PAPER 0 /* First enemy type */
 
