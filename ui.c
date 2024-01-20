@@ -102,6 +102,7 @@ upgrade_menu(struct nk_context *ctx, int32_t win_width, int32_t win_height) {
 }
 
 void pony_ui(struct nk_context *ctx, int32_t width, int32_t height) {
+	return;
 	nk_style_set_font(ctx, &mysteryquest->handle);
 	game_style(ctx);
 	/*if(transparent_begin(ctx, "ui", nk_rect(0, 0, width, height), 0)) {
